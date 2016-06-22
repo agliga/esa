@@ -5,7 +5,7 @@
 <h1>eBay on Alexa </h1>
 </div>
 <style type="text/css">body { font-family: arial,sans-serif;} </style>
-</head> 
+</head>
 <body>
 
 <div id="results"></div>
@@ -23,7 +23,7 @@ function _cb_findItemsByKeywords(root) {
     var pic      = item.galleryURL;
     var viewitem = item.viewItemURL;
     if (null != title && null != viewitem) {
-      html.push('<tr><td>' + '<img src="' + pic + '" border="0">' + '</td>' + 
+      html.push('<tr><td>' + '<img src="' + pic + '" border="0">' + '</td>' +
       '<td><b>[' + i + ']&nbsp</b><a href="' + viewitem + '" target="_blank">' + title + '</a></td></tr>');
     }
   }
@@ -33,17 +33,17 @@ function _cb_findItemsByKeywords(root) {
 
 // Create a JavaScript array of the item filters you want to use in your request
 var filterarray = [
-  {"name":"MaxPrice", 
-   "value":"5000", 
-   "paramName":"Currency", 
+  {"name":"MaxPrice",
+   "value":"5000",
+   "paramName":"Currency",
    "paramValue":"USD"},
-  {"name":"FreeShippingOnly", 
-   "value":"true", 
-   "paramName":"", 
+  {"name":"FreeShippingOnly",
+   "value":"true",
+   "paramName":"",
    "paramValue":""},
-  {"name":"ListingType", 
-   "value":["AuctionWithBIN", "FixedPrice", "StoreInventory"], 
-   "paramName":"", 
+  {"name":"ListingType",
+   "value":["AuctionWithBIN", "FixedPrice", "StoreInventory"],
+   "paramName":"",
    "paramValue":""},
   ];
 
@@ -66,7 +66,7 @@ function  buildURLArray() {
           var value = itemfilter[index][r];
           urlfilter += "&itemFilter\(" + i + "\)." + index + "\(" + r + "\)=" + value ;
           }
-        } 
+        }
         else {
           urlfilter += "&itemFilter\(" + i + "\)." + index + "=" + itemfilter[index];
         }
@@ -94,14 +94,14 @@ if (xhttp.status == 200) {
   keywords += item.Item.SearchString;
 }
 
-var keywordParams = "&keywords=" + keywords;  
+var keywordParams = "&keywords=" + keywords;
 
 // Construct the request
 // Replace MyAppID with your Production AppID
 var url = "http://svcs.ebay.com/services/search/FindingService/v1";
     url += "?OPERATION-NAME=findItemsByKeywords";
     url += "&SERVICE-VERSION=1.0.0";
-    url += "&SECURITY-APPNAME=SeshuAdu-eBayAlex-PRD-bab9522e2-c1024937";
+    url += "&SECURITY-APPNAME=AndrewGl-ebayalex-PRD-15a6394d9-1ee6a642";
     url += "&GLOBAL-ID=EBAY-US";
     url += "&RESPONSE-DATA-FORMAT=JSON";
     url += "&callback=_cb_findItemsByKeywords";
@@ -111,7 +111,7 @@ var url = "http://svcs.ebay.com/services/search/FindingService/v1";
     url += urlfilter;
 
 
-// Submit the request 
+// Submit the request
 s=document.createElement('script'); // create script element
 s.src= url;
 document.body.appendChild(s);

@@ -1,0 +1,22 @@
+{
+  "name": "esa",
+  "version": "1.0.0",
+  "description": "Ebay on Echo",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agliga/esa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agliga/esa/issues"
+  },
+  "homepage": "https://github.com/agliga/esa#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
