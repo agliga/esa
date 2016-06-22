@@ -4,10 +4,12 @@
 <div align= "center">
 <h1>eBay on Alexa </h1>
 </div>
+<link rel="stylesheet" href="style.css">
 <style type="text/css">body { font-family: arial,sans-serif;} </style>
 </head>
 <body>
 
+<script src="jquery-3.0.0.js"></script>
 <div id="results"></div>
 
 <script>
@@ -85,7 +87,7 @@ var refreshDoc = false;
 var str = "";
 
 
-xhttp.open("GET", "http://localhost:8081/", false);
+xhttp.open("GET", "http://localhost:8081/query", false);
 xhttp.send();
 
 if (xhttp.status == 200) {

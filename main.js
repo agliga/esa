@@ -9,7 +9,7 @@ app.get('/query', (request, res) => {
 
   var options = {
     host: 'znzdfoyhaa.execute-api.us-east-1.amazonaws.com',
-    path: '/prod/eBayOnAlexa',
+    path: '/prod/eBayAlexa',
     port: '443',
     method: 'POST'
   };
@@ -17,18 +17,16 @@ app.get('/query', (request, res) => {
   var https = require('https');
   callback = function (response) {
     //console.log(response.statusCode);
-    var str = ' ';
+    var str = '';
     response.on('data', function (chunk) {
       str += chunk;
     });
 
     response.on('end', function () {
       var item = JSON.parse(str);
-      //console.log(item.Item.SearchString);
-      //console.log(str);
       res.end(str);
     });
-  }
+  };
 
   try {
     var req = https.request(options, callback);
