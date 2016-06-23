@@ -101,6 +101,14 @@ function onIntent(intentRequest, session, callback) {
         setCeiling(intent, session, callback);
     } 
 
+    else if ("SelectionIntent" === intentName) {
+        setSelection(intent, session, callback);
+    } 
+
+    else if ("ThanksIntent" === intentName) {
+        handleSessionEndRequest(callback);
+    }
+
     else if ("AMAZON.HelpIntent" === intentName) {
         getWelcomeResponse(callback);
     } 
@@ -137,7 +145,7 @@ function getWelcomeResponse(callback) {
     var sessionAttributes = { state: 0 };
     var cardTitle = "Welcome";
     var speechOutput = "Welcome to eBay on Alexa. " +
-        "You can Search for items on eBay and see the results on the monitor. ";
+        "You can Search for items on eBay and see the results on the monitor. What are you interested in searching for?";
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
     var repromptText = "What would you like to search for.  ";
@@ -332,7 +340,7 @@ function setItemDetail(intent, session, callback) {
                 + ". Do you have a maximum price you'd like to spend?";
         shouldEndSession = false;
 
-        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 2, gender: session.attributes.gender,
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 1, gender: session.attributes.gender,
             size: size};
     } else {
         speechOutput = "Did not catch that. Could you please repeat what size. ";
@@ -357,13 +365,40 @@ function setCeiling(intent, session, callback) {
     if (ceilingSlot) {
         var ceiling = ceilingSlot.value;
         speechOutput = "Great! Here are some size " + session.attributes.size + " " + session.attributes.gender + " " + session.attributes.type + " " + session.attributes.item 
-                + "that are under " + ceiling + " dollars. Please say the number of the item if there is one that you would like to see.";
+                + " that are under " + ceiling + " dollars. Please say the number of the item if there is one that you would like to see.";
         shouldEndSession = false;
 
-        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 1, gender: session.attributes.gender,
+        // State set to two since we're now looking at the result of the query
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 2, gender: session.attributes.gender,
             size: session.attributes.size, ceiling: ceiling};
     } else {
-        speechOutput = "Did not catch that. Could you please repeat what size. ";
+        speechOutput = "Did not catch that. Could you please repeat how much you are willing to pay. ";
+    }
+
+    callback(sessionAttributes,
+         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+}
+
+function setSelection(intent, session, callback) {
+    var cardTitle = intent.name;
+    var selectionSlot = intent.slots.ItemNumber;
+    var repromptText = null;
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var itemDetail = "";
+
+    if (selectionSlot) {
+        var selection = selectionSlot.value;
+        speechOutput = "Sure, displaying item " + selection + ". If you are willing to spend more than " + session.attributes.ceiling + 
+        " dollars there are some Air Jordans or Curry 3 Shoes that I can show you.";
+        shouldEndSession = false;
+
+        // State set to three since we're looking at a specific shoe
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 3, gender: session.attributes.gender,
+            size: session.attributes.size, ceiling: session.attributes.ceiling, selection};
+    } else {
+        speechOutput = "Did not catch that. Could you please repeat which item you'd like to see.";
     }
 
     callback(sessionAttributes,

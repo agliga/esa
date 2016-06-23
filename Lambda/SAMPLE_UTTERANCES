@@ -10,8 +10,12 @@ ItemGenderIntent {Gender}
 
 ItemDetailIntent I'm looking for Size {Size}
 ItemDetailIntent Size {Size}
-ItemDetailIntent {Size}
 
 PriceCeilingIntent {Ceiling} Dollars
+
+SelectionIntent Item {ItemNumber}
+SelectionIntent {ItemNumber}
+
+ThanksIntent {Thanks}
 
 

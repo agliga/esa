@@ -61,7 +61,25 @@
     },
 
     {
+      "intent": "ThanksIntent",
+      "slots": [
+        {
+          "name": "Thanks",
+          "type": "LIST_OF_CLOSINGS"
+        }
+      ]
+    },
+
+    {
       "intent": "AMAZON.HelpIntent"
+    },
+
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    
+    {
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }
