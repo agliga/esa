@@ -1,0 +1,59 @@
+Search Item Test
+
+{
+  "session": {
+    "new": false,
+    "sessionId": "session1234",
+    "attributes": {},
+    "user": {
+      "userId": null
+    },
+    "application": {
+      "applicationId": "amzn1.echo-sdk-ams.app.asdfaelsfawehfa334"
+    }
+  },
+  "version": "1.0",
+  "request": {
+    "intent": {
+      "slots": {
+        "Item": {
+          "name": "Item",
+          "value": "shoes"
+        }
+      },
+      "name": "SearchStringIntent"
+    },
+    "type": "IntentRequest",
+    "requestId": "request56789"
+  }
+}
+
+Category Test
+
+{
+  "session": {
+    "new": false,
+    "sessionId": "session1234",
+    "attributes": {},
+    "user": {
+      "userId": null
+    },
+    "application": {
+      "applicationId": "amzn1.echo-sdk-ams.app.asdfaelsfawehfa3344"
+    }
+  },
+  "version": "1.0",
+  "request": {
+    "intent": {
+      "slots": {
+        "Type": {
+          "name": "Type",
+          "value": "athletic"
+        }
+      },
+      "name": "ItemCategoryIntent"
+    },
+    "type": "IntentRequest",
+    "requestId": "request56789"
+  }
+}

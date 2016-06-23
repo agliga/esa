@@ -1,0 +1,21 @@
+SearchStringIntent please search for {Item}
+SearchStringIntent Alexa please search for {Item}
+
+ItemCategoryIntent not sure maybe {Type}
+ItemCategoryIntent I'm looking for {Type}
+ItemCategoryIntent {Type}
+
+ItemGenderIntent I'm looking for {Gender}
+ItemGenderIntent {Gender}
+
+ItemDetailIntent I'm looking for Size {Size}
+ItemDetailIntent Size {Size}
+
+PriceCeilingIntent {Ceiling} Dollars
+
+SelectionIntent Item {ItemNumber}
+SelectionIntent {ItemNumber}
+
+ThanksIntent {Thanks}
+
+
