@@ -8,8 +8,10 @@ app.get('/query', (request, res) => {
   var params = "{\"operation\":\"read\",\"tableName\":\"LambdaTable\",\"payload\":{\"Key\":{\"Id\":\"1\"}}}";
 
   var options = {
-    host: 'znzdfoyhaa.execute-api.us-east-1.amazonaws.com',
-    path: '/prod/eBayAlexa',
+    // host: 'znzdfoyhaa.execute-api.us-east-1.amazonaws.com',
+    // path: '/prod/LambdaFunctionOverHttps',
+    host: 'h8c6gba5x8.execute-api.us-east-1.amazonaws.com',
+    path: '/prod/LambdaFunctionOverHttps',
     port: '443',
     method: 'POST'
   };
@@ -38,7 +40,7 @@ app.get('/query', (request, res) => {
 
 });
 
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 app.listen(8081, function () {
   console.log('Server running at http://127.0.0.1:8081/');
