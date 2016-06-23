@@ -13,6 +13,14 @@ function CompleteBuild() {
 
     oldFile.pipe(newFile);
 
+
+    newFile = fs.createWriteStream('dist/assets/style.css'),
+    oldFile = fs.createReadStream('app/styles/style.css');
+
+    //fs.createReadStream().pipe(fs.createWriteStream('newLog.log'));
+
+    oldFile.pipe(newFile);
+
 }
 
 // returns a Compiler instance
