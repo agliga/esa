@@ -11,7 +11,7 @@ eBay On Alexa Setup Instructions
 
 1. Use the link below to create a Custom Alexa Skill with AWS Lambda. It provides detailed instructions on what accounts are needed and how to setup custom skills https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function
 2. Use http://echoism.io to test your skill
-3. Create the eBayOnAlex Skill using the zip file and test it.
+3. Create the eBayOnAlex Skill using the zip file and test it. You'll need to setup the skill with the files in the Lambda/ directory under the Alexa tab in the [Developer Console] (https://developer.amazon.com/edw/home.html#/)
 4. Set up the Node.js app on your laptop. Instructions can be found here. https://coolestguidesontheplanet.com/installing-node-js-on-osx-10-10-yosemite/
 5. Run the main.js Node.js App
 6. Use the steps here to download and install eBay Developer Sample: http://developer.ebay.com/DevZone/finding/HowTo/GettingStarted_JS_NV_JSON/GettingStarted_JS_NV_JSON.html
