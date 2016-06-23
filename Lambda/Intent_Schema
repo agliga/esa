@@ -1,0 +1,67 @@
+{
+  "intents": [
+    {
+      "intent": "SearchStringIntent",
+      "slots": [
+        {
+          "name": "Item",
+          "type": "LIST_OF_ITEMS"
+        }
+      ]
+    },
+
+    {
+      "intent": "ItemCategoryIntent",
+      "slots": [
+        {
+          "name": "Type",
+          "type": "LIST_OF_TYPES"
+        }
+      ]
+    },
+
+    {
+      "intent": "ItemGenderIntent",
+      "slots": [
+        {
+          "name": "Gender",
+          "type": "LIST_OF_GENDERS"
+        }
+      ]
+    },
+
+    {
+      "intent": "ItemDetailIntent",
+      "slots": [
+        {
+          "name": "Size",
+          "type": "LIST_OF_SIZES"
+        }
+      ]
+    },
+
+    {
+      "intent": "PriceCeilingIntent",
+      "slots": [
+        {
+          "name": "Ceiling",
+          "type": "LIST_OF_CEILINGS"
+        }
+      ]
+    },
+
+    {
+      "intent": "SelectionIntent",
+      "slots": [
+        {
+          "name": "ItemNumber",
+          "type": "LIST_OF_NUMBERS"
+        }
+      ]
+    },
+
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
