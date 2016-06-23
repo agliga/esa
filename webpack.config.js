@@ -1,5 +1,6 @@
 var webpack = require('webpack'),
   path = require('path'),
+  ExtractTextPlugin = require('extract-text-webpack-plugin'),
   isProduction = process.env.PRODUCTION,
   plugins = [
     //new webpack.optimize.DedupePlugin(),
@@ -25,6 +26,9 @@ if (isProduction === 'true') {
   outPath = 'dist/assets';
 }
 
+plugins.push(new ExtractTextPlugin('main.css', {
+  allChunks: true
+}));
 
 module.exports = {
   entry: [
@@ -55,6 +59,21 @@ module.exports = {
     loaders: [
       // the url-loader uses DataUrls.
       // the file-loader emits files.
+      {
+        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        // Limiting the size of the woff fonts breaks font-awesome ONLY for the extract text plugin
+        // loader: 'url?limit=10000'
+        loader: 'url'
+      },
+      {
+        test: /\.(ttf|eot|svg|png|ico)(\?[\s\S]+)?$/,
+        loader: 'file'
+      },
+      {
+        test: /\.scss$/,
+        exclude: /(node_modules)/,
+        loader: ExtractTextPlugin.extract('css!sass')
+      },
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|styles|server)/,

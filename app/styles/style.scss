@@ -1,0 +1,23 @@
+body {
+    background-color: #F8F8F8;
+}
+
+.listing-parent {
+  display: flex;
+  & > .listing {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    flex: 1;
+    padding: 0;
+
+    &:not(:first-child) {
+      border-left: none;
+    }
+    & img.listing-img {
+      height: 300px;
+    }
+    & .text-container {
+      padding: 15px;
+    }
+  }
+}

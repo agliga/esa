@@ -30,9 +30,13 @@ export class Listings extends React.Component {
     console.log(items);
     return items.map(item => {
       return (
-        <div className="listing" key={item.itemId[0]}>
-        <img src={item.galleryURL[0]} className="listing-img"/>
-        <h2>{item.title[0]}</h2>
+        <div className="listing col-sm-4" key={item.itemId[0]}>
+          <div className="row">
+            <img src={item.galleryURL[0]} className="listing-img col-sm-12"/>
+          </div>
+          <div className="row text-container">
+            <div className="text-field col-sm-12">{item.title[0]}</div>
+          </div>
         </div>
       );
     });
@@ -40,7 +44,7 @@ export class Listings extends React.Component {
 
   render() {
     return (
-      <div className="listing-parent">
+      <div className="listing-parent container">
         {this.renderNested()}
       </div>
     );
