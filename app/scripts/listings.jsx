@@ -22,7 +22,7 @@ export class Listings extends React.Component {
 
   componentWillUnmount() {
     console.log('comp un mount');
-    query.detachListner(this);
+    query.detachListener(this);
   }
 
   getData() {

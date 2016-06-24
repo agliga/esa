@@ -6,6 +6,7 @@ class Query {
   constructor() {
     this.listeners = [];
     this.keyword = null;
+    this.oldItemNo = null;
     this.urlFilter = {};
     this.oldState = null;
     this.oldKeyword = null;
@@ -91,6 +92,14 @@ class Query {
     return data;
   }
 
+  getListing() {
+    var rawItemNo = _.get(this.dynamoDB, 'ItemNo', '');
+    var itemNo = parseInt(rawItemNo, 10);
+    var items = _.get(this.data, 'findItemsByKeywordsResponse[0].searchResult[0].item', []);
+    var listing = _.get(items, itemNo - 1 , null);
+    return listing;
+  }
+
   reroute() {
     console.log(this.oldState, this.dynamoDB);
     window.hashHistory = hashHistory;
@@ -107,6 +116,9 @@ class Query {
       case '2':
         hashHistory.push('/listings');
         break;
+      case '3':
+        hashHistory.push('/item');
+        break;
       default:
         hashHistory.push('/');
       }
@@ -118,6 +130,7 @@ class Query {
       url: '/query',
       success: (response) => {
         var item = JSON.parse(response);
+        var noRun = true;
 
         this.dynamoDB = item.Item;
         // var size = this.dynamoDB.Size ? `size ${this.dynamoDB.Size}` : '';
@@ -131,10 +144,15 @@ class Query {
         if (this.keywords && this.oldKeyword !== this.keywords) {
           this.oldKeyword = this.keywords;
           this.runJSONP();
-        } else {
+          noRun = false;
+        }
+        if (this.dynamoDB.ItemNo && this.dynamoDB.ItemNo !== this.oldItemNo) {
+          this.runGetItemJSONP();
+          noRun = false;
+        }
+        if (noRun) {
           this.triggerUpdate();
         }
-
         this.reroute();
       }
     });
@@ -147,6 +165,24 @@ class Query {
     }, 5000);
   }
 
+  runGetItemJSONP() {
+    var listing = this.getListing();
+    if (listing) {
+      var id = listing.itemId[0];
+      this.oldItemNo = this.dynamoDB.ItemNo;
+      $.getJSON('http://open.api.ebay.com/shopping?callbackname=?', {
+        callname: 'GetSingleItem',
+        appid: 'AndrewGl-ebayalex-PRD-15a6394d9-1ee6a642',
+        version: 517,
+        siteid: 0,
+        responseencoding:'JSON',
+        ItemId: id
+      }, (response) => {
+        this.listing = response;
+        this.triggerUpdate();
+      });
+    }
+  }
   runJSONP() {
     this.buildURLArray();
     console.log(this.urlFilter);
@@ -174,7 +210,7 @@ class Query {
   attachListener(callback) {
     this.listeners.push(callback);
   }
-  detachListner(callback) {
+  detachListener(callback) {
     this.listeners.splice(this.listeners.indexOf(callback), 1);
   }
 }

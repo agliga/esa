@@ -2,6 +2,7 @@ import * as React from 'react';
 import {render} from 'react-dom';
 import {Listings} from './listings';
 import {Start} from './start';
+import {Item} from './item';
 import {query} from './query';
 import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 import _ from 'lodash';
@@ -23,7 +24,8 @@ class App extends React.Component {
     this.setState({
       data: query.data,
       dynamoDB: query.dynamoDB,
-      keywords: query.keywords
+      keywords: query.keywords,
+      listing: query.getListing()
     });
   }
   componentWillMount() {
@@ -32,7 +34,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    query.detachListner(this);
+    query.detachListener(this);
   }
 
   render() {
@@ -43,6 +45,8 @@ class App extends React.Component {
       header = 'eBay Shopping Assistant';
     } else if (state === '-1') {
       header = '';
+    } else if (state === '3') {
+      header = _.get(this.state, 'listing.title[0]', '');
     } else {
       header = this.state.keywords || query.header;
     }
@@ -65,6 +69,7 @@ render(
         <IndexRoute component={Blank}/>
         <Route path="start" component={Start}/>
         <Route path="listings" component={Listings}/>
+        <Route path="item" component={Item}/>
       </Route>
     </Router>
   ), document.getElementById('main'));
