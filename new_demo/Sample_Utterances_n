@@ -1,0 +1,19 @@
+SearchStringIntent please search for {Item}
+SearchStringIntent Alexa please search for {Item}
+SearchStringIntent {Item}
+SearchStringIntent How about {Item}
+
+ItemCategoryIntent not sure maybe {Type}
+ItemCategoryIntent I'm looking for {Type}
+ItemCategoryIntent {Type}
+
+ChangeCategoryIntent Actually show me {ChangeType}
+ChangeCategoryIntent How about {ChangeType}
+
+ChangeGenderIntent Can I see this item for {Gender}
+ChangeGenderIntent I'm interested in seeing this for {Gender}
+
+SelectionIntent Item {ItemNumber}
+SelectionIntent {ItemNumber}
+
+

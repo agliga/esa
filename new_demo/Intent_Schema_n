@@ -1,0 +1,75 @@
+{
+  "intents": [
+    {
+      "intent": "SearchStringIntent",
+      "slots": [
+        {
+          "name": "Item",
+          "type": "LIST_OF_ITEMS"
+        }
+      ]
+    },
+
+    {
+      "intent": "ChangeCategoryIntent",
+      "slots": [
+        {
+          "name": "ChangeType",
+          "type": "LIST_OF_TYPES"
+        }
+      ]
+    },
+
+    {
+      "intent": "ItemCategoryIntent",
+      "slots": [
+        {
+          "name": "Type",
+          "type": "LIST_OF_TYPES"
+        }
+      ]
+    },
+
+    {
+      "intent": "ChangeGenderIntent",
+      "slots": [
+        {
+          "name": "Gender",
+          "type": "LIST_OF_GENDERS"
+        }
+      ]
+    },
+
+    {
+      "intent": "SelectionIntent",
+      "slots": [
+        {
+          "name": "ItemNumber",
+          "type": "LIST_OF_NUMBERS"
+        }
+      ]
+    },
+
+    {
+      "intent": "ThanksIntent",
+      "slots": [
+        {
+          "name": "Thanks",
+          "type": "LIST_OF_CLOSINGS"
+        }
+      ]
+    },
+
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
