@@ -1,15 +1,18 @@
+$border-color: #dcdcdc;
+
 body {
-    background-color: #F8F8F8;
+  background-color: #F8F8F8;
 }
 
 .listing-parent {
   display: flex;
+  margin: 20px auto;
   & > .listing {
     background-color: #ffffff;
-    border: 1px solid #dcdcdc;
+    border: 1px solid $border-color;
     flex: 1;
     padding: 0;
-
+    position: relative;
     &:not(:first-child) {
       border-left: none;
     }
@@ -19,5 +22,97 @@ body {
     & .text-container {
       padding: 15px;
     }
+    .number-indicator {
+      position: absolute;
+      background-color: white;
+      font-size: 2em;
+      z-index: 200;
+      border-right: 1px solid $border-color;
+      border-bottom: 1px solid $border-color;
+      border-radius: 0 0 5px 0;
+      left: 0;
+      top: 0;
+      padding: 3px;
+
+    }
   }
+}
+
+.start {
+  .mike {
+    background-color: #4ec9d5;
+    border-radius: 50%;
+    text-align: center;
+    height: 80px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    border: 2px solid #fff;
+    box-shadow: 0px 8px 42px -10px rgba(46,46,46,1)
+  }
+  .search-text {
+    text-align: center;
+    font-size: 2em;
+    background-color: white;
+    box-shadow: 2px 3px 34px -12px rgba(50,50,50,1);
+    color: #acacac;
+    margin: 20px auto;
+    border-radius: 20px;
+    padding: 10px;
+    font-weight: bold;
+    position: relative;
+    .bubble-arrow {
+      position: absolute;
+      bottom: 61px;
+      left: -33px;
+      width: 0;
+      height: 0;
+      border-top: 9px solid transparent;
+      border-bottom: 1px solid transparent;
+      border-right: 33px solid #ddd;
+      transform: rotate(-14deg);
+      z-index: 40;
+      box-shadow: 4px 4px 34px -12px #323232;
+    }
+  }
+  .search-phrase {
+    background-color: #ffffff;
+    color: #acacac;
+    font-style: italic;
+    text-align: center;
+    font-size: 2em;
+    .text-search {
+      border: 1px solid #dcdcdc;
+    }
+    .img-search {
+      padding: 0;
+      border-top: none;
+      border: 1px solid #dcdcdc;
+    }
+  }
+  .item-container {
+    display: flex;
+    .item {
+      flex: 1;
+    }
+  }
+
+}
+
+.transition-enter {
+  opacity: 0.01;
+}
+
+.transition-enter.transition-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.transition-leave {
+  display: none;
+}
+
+.transition-leave.transition-leave-active {
+  display: none;
 }

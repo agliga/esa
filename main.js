@@ -41,6 +41,7 @@ app.get('/query', (request, res) => {
 });
 
 app.use(express.static('dist'));
+app.use(express.static('public'));
 
 app.listen(8081, function () {
   console.log('Server running at http://127.0.0.1:8081/');

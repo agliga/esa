@@ -25,17 +25,24 @@ export class Listings extends React.Component {
     query.detachListner(this);
   }
 
-  renderNested() {
+  getData() {
     var items = _.get(this.state, 'data.findItemsByKeywordsResponse[0].searchResult[0].item', []);
-    console.log(items);
-    return items.map(item => {
+
+    return [items.slice(0, 3), items.slice(3, 6)];
+  }
+
+  renderNested(items, offset) {
+    return items.map((item, index) => {
       return (
-        <div className="listing col-sm-4" key={item.itemId[0]}>
+        <div className="listing col-sm-4" key={item.viewItemURL[0]}>
           <div className="row">
+            <div className="number-indicator"> <strong>{offset + index + 1}</strong></div>
             <img src={item.galleryURL[0]} className="listing-img col-sm-12"/>
           </div>
           <div className="row text-container">
-            <div className="text-field col-sm-12">{item.title[0]}</div>
+            <div className="text-field col-sm-12">
+               {item.title[0]}
+            </div>
           </div>
         </div>
       );
@@ -43,9 +50,20 @@ export class Listings extends React.Component {
   }
 
   render() {
+    var data = this.getData();
+
     return (
-      <div className="listing-parent container">
-        {this.renderNested()}
+      <div className="container">
+        {
+          data.map((item, index) => {
+            return (
+              <div className="row listing-parent" key={index}>
+              {this.renderNested(item, index * 3)}
+
+              </div>
+            );
+          })
+        }
       </div>
     );
   }

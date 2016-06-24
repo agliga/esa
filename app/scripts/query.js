@@ -50,16 +50,33 @@ class Query {
     }
   }
 
-  run() {
+  runQuery() {
     $.ajax({
       url: '/query',
       success: (response) => {
         var item = JSON.parse(response);
-        this.keywords = item.Item.SearchString || item.Item.Category;
-        this.runJSONP();
+
+        this.dynamoDB = item.Item;
+        var size = this.dynamoDB.Size ? `size ${this.dynamoDB.Size}` : '';
+        this.keywords = '';
+        if (this.dynamoDB.St >= 2) {
+          this.keywords = `${this.dynamoDB.Gender || ''} ${this.dynamoDB.Tipe || ''} ${this.dynamoDB.Category || ''} ${size}`;
+        }
+
+        if (this.keywords) {
+          this.runJSONP();
+        } else {
+          this.triggerUpdate();
+        }
       }
     });
+  }
 
+  run() {
+    this.runQuery();
+    setTimeout(() => {
+      this.run();
+    }, 5000);
   }
 
   runJSONP() {
@@ -76,9 +93,13 @@ class Query {
       'paginationInput.entriesPerPage': 6
     }, this.urlFilter), (response) => {
       this.data = response;
-      this.listeners.forEach((cb) => {
-        cb.update();
-      });
+      this.triggerUpdate();
+    });
+  }
+
+  triggerUpdate() {
+    this.listeners.forEach((cb) => {
+      cb.update();
     });
   }
 
