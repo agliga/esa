@@ -1,0 +1,525 @@
+/**
+ * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
+ * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
+ * testing instructions are located at http://amzn.to/1LzFrj6
+ *
+ * For additional samples, visit the Alexa Skills Kit Getting Started guide at
+ * http://amzn.to/1LGWsLG
+ */
+
+// Route the incoming request based on type (LaunchRequest, IntentRequest,
+// etc.) The JSON body of the request is provided in the event parameter.
+exports.handler = function (event, context) {
+    try {
+        console.log("event.session.application.applicationId=" + event.session.application.applicationId);
+
+        var options = {
+            host: 'h8c6gba5x8.execute-api.us-east-1.amazonaws.com',
+            path: '/prod/LambdaFunctionOverHttps',
+            port: '443',
+            method: 'POST'
+        };
+
+        var params = {
+            "operation":"update",
+            "tableName":"LambdaTable",
+            "payload":
+             {
+                "Key": { 
+                  "Id": "1"
+                 },
+                "UpdateExpression": "set St = :s",
+                "ExpressionAttributeValues": {
+                    // state is stored in each session attribute
+                    ":s": "0"
+                 }
+
+                // "UpdateExpression": "set Item = :q",
+                // "ExpressionAttributeValues": {
+                //     ":q": item,
+                // }
+
+            }
+        };
+
+          var https = require('https');
+          var req = https.request(options, function(res) {
+                console.log("statusCode: ", res.statusCode);
+                res.on('data', function (chunk) {
+                    //body += chunk;
+                });
+            });
+            
+             console.log(JSON.stringify(params));
+             req.write(JSON.stringify(params));
+             req.end();
+        /**
+         * Uncomment this if statement and populate with your skill's application ID to
+         * prevent someone else from configuring a skill that sends requests to this function.
+         */
+        /*
+        if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.[unique-value-here]") {
+             context.fail("Invalid Application ID");
+        }
+        */
+
+        if (event.session.new) {
+            onSessionStarted({requestId: event.request.requestId}, event.session);
+        }
+
+        if (event.request.type === "LaunchRequest") {
+            onLaunch(event.request,
+                event.session,
+                function callback(sessionAttributes, speechletResponse) {
+                    context.succeed(buildResponse(sessionAttributes, speechletResponse));
+                });
+        } else if (event.request.type === "IntentRequest") {
+            onIntent(event.request,
+                event.session,
+                function callback(sessionAttributes, speechletResponse) {
+                    saveSearchString(sessionAttributes.item, context, sessionAttributes, speechletResponse);
+                    // context.succeed(buildResponse(sessionAttributes, speechletResponse));
+
+                    console.log("onIntent callback");
+                });
+        } else if (event.request.type === "SessionEndedRequest") {
+            onSessionEnded(event.request, event.session);
+            context.succeed();
+        }
+    } catch (e) {
+        context.fail("Exception: " + e);
+    }
+};
+
+/**
+ * Called when the session starts.
+ */
+function onSessionStarted(sessionStartedRequest, session) {
+    console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId +
+        ", sessionId=" + session.sessionId);
+
+    
+}
+
+/**
+ * Called when the user launches the skill without specifying what they want.
+ */
+function onLaunch(launchRequest, session, callback) {
+    console.log("onLaunch requestId=" + launchRequest.requestId +
+        ", sessionId=" + session.sessionId);
+
+    // Dispatch to your skill's launch.
+    getWelcomeResponse(callback);
+}
+
+/**
+ * Called when the user specifies an intent for this skill.
+ */
+function onIntent(intentRequest, session, callback) {
+    console.log("onIntent requestId=" + intentRequest.requestId +
+        ", sessionId=" + session.sessionId);
+
+    var intent = intentRequest.intent,
+        intentName = intentRequest.intent.name;
+
+    // Dispatch to your skill's intent handlers
+    if ("SearchStringIntent" === intentName) {
+        setSearchString(intent, session, callback);
+    } 
+
+    else if ("ItemCategoryIntent" === intentName) {
+        setItemType(intent, session, callback);
+    }
+
+    else if ("ChangeCategoryIntent" === intentName) {
+        changeCategoryType(intent, session, callback);
+    }
+
+    else if ("ChangeGenderIntent" === intentName) {
+        setGender(intent, session, callback);
+    }
+
+    else if ("SelectionIntent" === intentName) {
+        setSelection(intent, session, callback);
+    } 
+
+    else if ("AMAZON.HelpIntent" === intentName) {
+        getWelcomeResponse(callback);
+    } 
+
+    else if ("AMAZON.StopIntent" === intentName || "AMAZON.CancelIntent" === intentName) {
+        handleSessionEndRequest(callback);
+    } 
+
+    else {
+        throw "Invalid intent";
+    }
+}
+
+/**
+ * Called when the user ends the session.
+ * Is not called when the skill returns shouldEndSession=true.
+ */
+function onSessionEnded(sessionEndedRequest, session) {
+    console.log("onSessionEnded requestId=" + sessionEndedRequest.requestId +
+        ", sessionId=" + session.sessionId);
+    // Add cleanup logic here
+}
+
+// --------------- Functions that control the skill's behavior -----------------------
+
+function getWelcomeResponse(callback) {
+    // The state variable defines which page we should be showing on the backend.
+    // 0 --> Splash Screen
+    // 1 --> Shoe Category
+    // 2 --> List of shoes with given atttributes
+    // 3 --> Specific Shoe
+
+    // Initialize state to splash screen
+
+    var sessionAttributes = { item: "", type: "", state: "0", gender: "",
+            size: "", ceiling: "", selection: ""};
+    var cardTitle = "Welcome";
+    var speechOutput = "Hello. I'm Esa, your personal eBay shopping assistant. " +
+        "You can search for shoes or motors or anything else you want. What are you interested in searching for?";
+    // If the user either does not reply to the welcome message or says something that is not
+    // understood, they will be prompted again with this text.
+    var repromptText = "What would you like to search for.  ";
+        
+    var shouldEndSession = false;
+
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function handleSessionEndRequest(callback) {
+    var cardTitle = "Session Ended";
+    var speechOutput = "Thank you for trying eBay on Alexa!";
+    // Setting this to true ends the session and exits the skill.
+    var shouldEndSession = true;
+
+    callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
+}
+
+/**
+ * Sets the item in the session and prepares the speech to reply to the user.
+ */
+function setSearchString(intent, session, callback) {
+    var cardTitle = intent.name;
+    var searchStrSlot = intent.slots.Item;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var followOutput = "";
+
+    if (searchStrSlot) {
+        var searchStr = searchStrSlot.value;
+
+        if (searchStr === "shoe" || searchStr === "shoes") {
+            followOutput = "shoes are you looking for: Athletic, Casual, Formal, or Sneaker/Sandals?";
+        }
+
+        speechOutput = "Sure, I can help you with that. What type of " + followOutput;
+        sessionAttributes = { item: searchStr, state: "1", selection: 2};
+        // repromptText = "You can find more about an item by saying tell me more about item using its ID";
+
+    } else {
+        speechOutput = "Did not catch what you are looking for. Please try again";
+        repromptText = "You can search for items on eBay and look at the results on the monitor. ";
+    }
+
+    callback(sessionAttributes,
+         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function createSearchStringAttributes(item) {
+    // state 1 indicates we're determining a shoe category
+    return {
+        state: "1",
+        item : item
+    };
+}
+
+// Set type of item (in this case, athletic shoes) in the program state
+function setItemType(intent, session, callback) {
+    var cardTitle = intent.name;
+    // Here we're getting the type of item 
+    var searchStrSlot = intent.slots.Type;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var followOutput = "";
+
+    if (searchStrSlot) {
+        var searchStr = searchStrSlot.value;
+
+        // console.log("");
+        // console.log(session.attributes);
+        // console.log("");
+
+        // Assuming they're saying athletic, session.attributes.item should give us shoes, presumably we'll check if the item
+        // is classifiable by gender
+        speechOutput = "OK, here are some " + searchStr + " " + session.attributes.item + " that I've selected for you. "
+        + "Please say the number of the item if there is one that you would like to see.";
+            // state is 1
+            // + " By the way, the state is " + session.attributes.state;
+        // Manually setting sessionAttributes here, apparently they're not stored over multiple updates
+        sessionAttributes = { item: session.attributes.item, type: searchStr, 
+            state: "1", gender: "men's", size: 10, ceiling: 100, selection: 2};
+    }
+
+    else {
+            speechOutput = "Did not catch what category you are looking for. Please try again";
+        }
+
+        callback(sessionAttributes,
+             buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+// Change item type (type of shoe)
+function changeCategoryType(intent, session, callback) {
+    var cardTitle = intent.name;
+    // Here we're getting the type of item 
+    var searchStrSlot = intent.slots.ChangeType;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var followOutput = "";
+
+    if (searchStrSlot) {
+        var searchStr = searchStrSlot.value;
+
+        // console.log("");
+        // console.log(session.attributes);
+        // console.log("");
+
+        // Assuming they're saying athletic, session.attributes.item should give us shoes, presumably we'll check if the item
+        // is classifiable by gender
+        speechOutput = "OK, here are some " + searchStr + "  that I've selected for you. " 
+        + "Please say the number of the item if there is one that you would like to see.";
+            // state is 1
+            // + " By the way, the state is " + session.attributes.state;
+        // Manually setting sessionAttributes here, apparently they're not stored over multiple updates
+        sessionAttributes = { item: session.attributes.item, type: searchStr, state: 1, gender: "men's",
+            size: 10, ceiling: 100, selection: 2};
+    }
+
+    else {
+            speechOutput = "Did not catch what category you are looking for. Please try again";
+        }
+
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+// Sets the gender of the item, presumably we will check if this is needed in a less-hacky
+// form of this program
+function setGender(intent, session, callback) {
+    var cardTitle = intent.name;
+    // Here we're getting the gender
+    var searchStrSlot = intent.slots.Gender;
+    var repromptText = "";
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var followOutput = "";
+
+        if (searchStrSlot) {
+            var searchStr = searchStrSlot.value;
+
+            // Assuming they're saying male, session.attributes.item should give us shoes, presumably we'll check if the item
+            // is classifiable by gender
+            speechOutput = "Sure, I can look for " + searchStr + " " + session.attributes.type + " " + session.attributes.item 
+                + ". Please say the number of the item if there is one that you would like to see.";
+                // state is 1
+                // + " By the way, the state is " + session.attributes.state;
+            // Manually setting sessionAttributes here
+            sessionAttributes = { item: session.attributes.item, type: session.attributes.type, 
+                state: 1, gender: searchStr, size: 8, ceiling: 100, selection: 2};
+        }
+
+        else {
+                speechOutput = "Did not catch what gendered item you are looking for. Please try again";
+            }
+
+            callback(sessionAttributes,
+                 buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function saveSearchString(item, context, sessionAttributes, speechletResponse) {
+  //var params = "{\"operation\":\"read\",\"tableName\":\"LambdaTable\",\"payload\":{\"Key\":{\"Id\":\"1\"}}}";
+
+  var options = {
+    host: 'h8c6gba5x8.execute-api.us-east-1.amazonaws.com',
+    path: '/prod/LambdaFunctionOverHttps',
+    port: '443',
+    method: 'POST'
+   };
+
+   var qs;
+
+   if (item === "shoe" || item === "shoes") {
+        qs = sessionAttributes.gender + " " + sessionAttributes.type 
+            + " " + item + " size " + sessionAttributes.size;
+   }
+
+   else {    
+        qs = sessionAttributes.gender + " " + sessionAttributes.type + " " + item; 
+   }
+
+   var params = {
+        "operation":"update",
+        "tableName":"LambdaTable",
+        "payload":
+         {
+            "Key": { 
+              "Id": "1"
+             },
+            "UpdateExpression": "set QString = :q, MaxPrice = :c, St = :s, ItemNo = :sel",
+            "ExpressionAttributeValues": {
+                // state is stored in each session attribute
+                ":s": sessionAttributes.state,
+                ":q": qs,
+                ":c": sessionAttributes.ceiling,
+                ":sel": sessionAttributes.selection
+             }
+
+            // "UpdateExpression": "set Item = :q",
+            // "ExpressionAttributeValues": {
+            //     ":q": item,
+            // }
+
+        }
+    };
+
+  var https = require('https');
+  var req = https.request(options, function(res) {
+        console.log("statusCode: ", res.statusCode);
+        res.on('data', function (chunk) {
+            //body += chunk;
+        });
+        // console.log("saveSearchString session attributes");
+        // console.log(sessionAttributes);
+
+        context.succeed(buildResponse(sessionAttributes, speechletResponse));
+    });
+    
+     console.log(JSON.stringify(params));
+     req.write(JSON.stringify(params));
+     req.end();  
+}
+
+function setItemDetail(intent, session, callback) {
+    var cardTitle = intent.name;
+    var itemDetailSlot = intent.slots.Size;
+    var repromptText = null;
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var itemDetail = "";
+
+
+    if (itemDetailSlot) {
+        var size = itemDetailSlot.value;
+        speechOutput = "Let's look for size " + size + " " + session.attributes.gender + " " + session.attributes.type + " " + session.attributes.item 
+                + ". Do you have a maximum price you'd like to spend?";
+        shouldEndSession = false;
+
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 1, gender: session.attributes.gender,
+            size: size};
+    } else {
+        speechOutput = "Did not catch that. Could you please repeat what size. ";
+    }
+
+    // Setting repromptText to null signifies that we do not want to reprompt the user.
+    // If the user does not respond or says something that is not understood, the session
+    // will end.
+    callback(sessionAttributes,
+         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+}
+
+function setCeiling(intent, session, callback) {
+    var cardTitle = intent.name;
+    var ceilingSlot = intent.slots.Ceiling;
+    var repromptText = null;
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var itemDetail = "";
+
+    if (ceilingSlot) {
+        var ceiling = ceilingSlot.value;
+        speechOutput = "Great! Here are some size " + session.attributes.size + " " + session.attributes.gender + " " + session.attributes.type + " " + session.attributes.item 
+                + " that are under " + ceiling + " dollars. Please say the number of the item if there is one that you would like to see.";
+        shouldEndSession = false;
+
+        // State set to two since we're now looking at the result of the query
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 2, gender: session.attributes.gender,
+            size: session.attributes.size, ceiling: ceiling};
+    } else {
+        speechOutput = "Did not catch that. Could you please repeat how much you are willing to pay. ";
+    }
+
+    callback(sessionAttributes,
+         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+}
+
+function setSelection(intent, session, callback) {
+    var cardTitle = intent.name;
+    var selectionSlot = intent.slots.ItemNumber;
+    var repromptText = null;
+    var sessionAttributes = {};
+    var shouldEndSession = false;
+    var speechOutput = "";
+    var itemDetail = "";
+
+    if (selectionSlot) {
+        var selection = selectionSlot.value;
+        speechOutput = "Displaying item " + selection + ". If you are willing to spend more than " + session.attributes.ceiling + 
+        " dollars there are some other selections that I can show you.";
+        shouldEndSession = false;
+
+        // State set to three since we're looking at a specific shoe
+        sessionAttributes = { item: session.attributes.item, type: session.attributes.type, state: 3, gender: session.attributes.gender,
+            size: session.attributes.size, ceiling: session.attributes.ceiling, selection: selection};
+    } else {
+        speechOutput = "Did not catch that. Could you please repeat which item you'd like to see.";
+    }
+
+    callback(sessionAttributes,
+         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+}
+
+// --------------- Helpers that build all of the responses -----------------------
+
+function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
+    return {
+        outputSpeech: {
+            type: "PlainText",
+            text: output
+        },
+        card: {
+            type: "Simple",
+            title: "SessionSpeechlet - " + title,
+            content: "SessionSpeechlet - " + output
+        },
+        reprompt: {
+            outputSpeech: {
+                type: "PlainText",
+                text: repromptText
+            }
+        },
+        shouldEndSession: shouldEndSession
+    };
+}
+
+function buildResponse(sessionAttributes, speechletResponse) {
+    return {
+        version: "1.0",
+        sessionAttributes: sessionAttributes,
+        response: speechletResponse
+    };
+}
