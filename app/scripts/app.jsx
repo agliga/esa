@@ -38,7 +38,7 @@ class App extends React.Component {
   }
 
   render() {
-    var state = _.get(this.state.dynamoDB, 'St', -1);
+    var state = parseInt(_.get(this.state.dynamoDB, 'St', -1), 10);
     var header;
     console.log('what is state', state, this.state);
     if (state === 0) {

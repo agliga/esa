@@ -133,6 +133,7 @@ body {
 
 .view-item {
   display: flex;
+  margin: 20px auto;
   .item {
     flex: 1
 
@@ -140,5 +141,6 @@ body {
   img {
     height: 300px;
     width: 100%;
+    border: 1px solid $border-color;
   }
 }
