@@ -34,7 +34,7 @@ module.exports = {
   entry: [
     // 'webpack/hot/dev-server',
     // 'webpack-hot-middleware/client',
-    // 'font-awesome-loader!./app/styles/font-awesome.config.js',
+    'font-awesome-loader!./app/styles/font-awesome.config.js',
     __dirname + '/app/scripts/main.js'
   ],
   output: {
@@ -56,6 +56,15 @@ module.exports = {
     // }
   },
   module: {
+    preLoaders: [
+      //
+      {
+        test: /\.jsx?$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/
+      }
+
+    ],
     loaders: [
       // the url-loader uses DataUrls.
       // the file-loader emits files.

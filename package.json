@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bin/webpack-run.js && node main.js"
+    "start": "node bin/webpack-run.js && npm run start-server",
+    "start-dev": "node bin/webpack-dev.js",
+    "start-server": "node main.js"
   },
   "repository": {
     "type": "git",
@@ -22,12 +24,16 @@
     "babel-browser": "^6.1.19",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
+    "babel-eslint": "^6.1.0",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0",
     "bootstrap-sass": "^3.3.6",
     "compass-mixins": "^0.12.10",
     "css-loader": "^0.23.1",
+    "eslint": "^2.13.1",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-react": "^5.2.2",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
@@ -38,9 +44,13 @@
     "node-sass": "^3.8.0",
     "react-addons-css-transition-group": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-router": "^2.5.1",
     "sass-loader": "^3.2.1",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^1.14.1"
   }
 }
