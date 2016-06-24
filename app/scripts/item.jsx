@@ -21,6 +21,15 @@ export class Item extends React.Component {
     query.detachListener(this);
   }
 
+  getItem(url) {
+    return (
+      <div className="col-sm-4 item">
+      <img className="images" src={url}/>
+      </div>
+    )
+
+  }
+
   render() {
     console.log(this.state.listing);
     if (!this.state.listing) {
@@ -29,13 +38,8 @@ export class Item extends React.Component {
     var item = _.get(this.state.listing, 'Item');
 
     return (
-      <div className="row">
-        <div className="col-sm-4">
-          <img src={item.PictureURL[0]}/>
-        </div>
-        <div className="col-sm-8">
-
-        </div>
+      <div className="row view-item">
+        {item.PictureURL.map(this.getItem)}
       </div>
     );
   }

@@ -130,3 +130,15 @@ body {
 .transition-leave.transition-leave-active {
   display: none;
 }
+
+.view-item {
+  display: flex;
+  .item {
+    flex: 1
+
+  }
+  img {
+    height: 300px;
+    width: 100%;
+  }
+}
