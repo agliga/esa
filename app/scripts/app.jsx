@@ -1,14 +1,21 @@
 import * as React from 'react';
-import { render } from 'react-dom';
-import { Listings } from './listings';
-import { Start } from './start';
-import { query } from './query';
+import {render} from 'react-dom';
+import {Listings} from './listings';
+import {Start} from './start';
+import {query} from './query';
+import {Route, Router, IndexRoute, hashHistory} from 'react-router';
+import _ from 'lodash';
+
+class Blank extends React.Component {
+  render() {
+    return null;
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {};
   }
 
   update() {
@@ -21,35 +28,29 @@ class App extends React.Component {
   }
   componentWillMount() {
     query.attachListener(this);
+    this.update();
   }
 
   componentWillUnmount() {
     query.detachListner(this);
   }
 
-  getHeader() {
-
-  }
-
   render() {
-    var ComponentToShow = null,
-      state = _.get(this.state.dynamoDB, 'St', -1),
-      header;
-      console.log('what is state', state, this.state);
-    if (state === 0) {
-      ComponentToShow = Start;
+    var state = _.get(this.state.dynamoDB, 'St', -1);
+    var header;
+    console.log('what is state', state, this.state);
+    if (state === '0') {
       header = 'eBay Shopping Assistant';
-    } else if (state === -1) {
-      return null;
+    } else if (state === '-1') {
+      header = '';
     } else {
-      ComponentToShow = Listings;
       header = this.state.keywords || query.header;
     }
 
     return (
       <div>
         <h1 className="text-center">{header}</h1>
-        <ComponentToShow/>
+        {this.props.children}
       </div>
     );
   }
@@ -58,4 +59,12 @@ class App extends React.Component {
 query.run();
 
 render(
-  <App query={query}/>, document.getElementById('main'));
+  (
+    <Router history={hashHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Blank}/>
+        <Route path="start" component={Start}/>
+        <Route path="listings" component={Listings}/>
+      </Route>
+    </Router>
+  ), document.getElementById('main'));

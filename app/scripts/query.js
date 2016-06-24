@@ -1,28 +1,32 @@
+import {hashHistory} from 'react-router';
+import $ from 'jquery';
+import _ from 'lodash';
+
 class Query {
   constructor() {
     this.listeners = [];
     this.keyword = null;
     this.urlFilter = {};
+    this.oldState = null;
+    this.oldKeyword = null;
     this.filterArray = [{
-        name: 'MaxPrice',
-        value: '5000',
-        paramName: 'Currency',
-        paramValue: 'USD'
-      }, {
-        name: 'FreeShippingOnly',
-        value: 'true',
-        paramName: '',
-        paramValue: ''
-      }, {
-        name: 'ListingType',
-        value: [
-          'AuctionWithBIN', 'FixedPrice', 'StoreInventory'
-        ],
-        paramName: '',
-        paramValue: ''
-      }
-    ];
-
+      name: 'MaxPrice',
+      value: '5000',
+      paramName: 'Currency',
+      paramValue: 'USD'
+    }, {
+      name: 'FreeShippingOnly',
+      value: 'true',
+      paramName: '',
+      paramValue: ''
+    }, {
+      name: 'ListingType',
+      value: [
+        'AuctionWithBIN', 'FixedPrice', 'StoreInventory'
+      ],
+      paramName: '',
+      paramValue: ''
+    }];
   }
 
   buildURLArray() {
@@ -87,6 +91,28 @@ class Query {
     return data;
   }
 
+  reroute() {
+    console.log(this.oldState, this.dynamoDB);
+    window.hashHistory = hashHistory;
+    if (this.oldState !== this.dynamoDB.St) {
+      this.oldState = this.dynamoDB.St;
+      console.log(this.dynamoDB.St === 0);
+      switch (this.dynamoDB.St) {
+      case '0':
+        hashHistory.push('/start');
+        break;
+      case '1':
+        hashHistory.push('/listings');
+        break;
+      case '2':
+        hashHistory.push('/listings');
+        break;
+      default:
+        hashHistory.push('/');
+      }
+    }
+  }
+
   runQuery() {
     $.ajax({
       url: '/query',
@@ -94,21 +120,22 @@ class Query {
         var item = JSON.parse(response);
 
         this.dynamoDB = item.Item;
-        var size = this.dynamoDB.Size ? `size ${this.dynamoDB.Size}` : '';
-        this.keywords = '';
-        if (this.dynamoDB.St >= 2) {
-          this.keywords = `${this.dynamoDB.Gender || ''} ${this.dynamoDB.Tipe || ''} ${this.dynamoDB.Category || ''} ${size}`;
-        } else if (this.dynamoDB.St === 1) {
+        // var size = this.dynamoDB.Size ? `size ${this.dynamoDB.Size}` : '';
+        this.keywords = this.dynamoDB.QString;
+        if (this.dynamoDB.St === 1) {
           // Mock data
           this.data = this.getMockData();
           this.header = 'Shop for shoes';
         }
 
-        if (this.keywords) {
+        if (this.keywords && this.oldKeyword !== this.keywords) {
+          this.oldKeyword = this.keywords;
           this.runJSONP();
         } else {
           this.triggerUpdate();
         }
+
+        this.reroute();
       }
     });
   }
@@ -130,7 +157,7 @@ class Query {
       'GLOBAL-ID': 'EBAY-US',
       'RESPONSE-DATA-FORMAT': 'JSON',
       'REST-PAYLOAD': true,
-      'keywords': this.keywords,
+      keywords: this.keywords,
       'paginationInput.entriesPerPage': 6
     }, this.urlFilter), (response) => {
       this.data = response;

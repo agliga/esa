@@ -1,21 +1,23 @@
-import { query } from './query';
+import {query} from './query';
+import _ from 'lodash';
+import React from 'react';
 
 export class Listings extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.update();
   }
 
   update() {
     this.setState({
       data: query.data
-    })
+    });
   }
 
   componentWillMount() {
     console.log('comp mount');
     query.attachListener(this);
+    this.update();
   }
 
   componentWillUnmount() {

@@ -1,12 +1,10 @@
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import React from 'react';
 
 export class Start extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      current: 0
-    };
     this.texts = [
       {
         text: 'ESA, please search for shoes',
@@ -24,8 +22,18 @@ export class Start extends React.Component {
     this.rotate();
   }
 
+  componentWillMount() {
+    this.setState({
+      current: 0
+    });
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
   rotate() {
-    setTimeout(() => {
+    this.timeout = setTimeout(() => {
       var cur = this.state.current + 1;
       if (cur >= this.texts.length) {
         cur = 0;
@@ -45,7 +53,7 @@ export class Start extends React.Component {
       <div className="start container-fluid">
         <div className="row item-container">
           <div className="col-sm-4 item">
-            <img src="images/ESA.png" className="col-sm-12"/>
+            <img src="images/ESA.png" className="col-sm-12 esa-icon"/>
           </div>
           <div className=" col-sm-4 item">
             <div className="search-text col-sm-11">
@@ -55,10 +63,10 @@ export class Start extends React.Component {
           </div>
           <div className="col-sm-4 item">
             <ReactCSSTransitionGroup transitionName="transition" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-            <div className="search-phrase">
-                <div className="col-sm-12 text-search">
-                  {objText.text}
-                </div>
+            <div className="search-phrase" key={this.state.current}>
+              <div className="text-search col-sm-12">
+                <span className="fa fa-microphone fa-fw"></span> {objText.text}
+              </div>
                 <img className="col-sm-12 img-search" src={objText.img} />
             </div>
             </ReactCSSTransitionGroup>
@@ -66,6 +74,5 @@ export class Start extends React.Component {
         </div>
       </div>
     );
-
   }
 }

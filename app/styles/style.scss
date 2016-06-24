@@ -1,14 +1,16 @@
 $border-color: #dcdcdc;
+$white: #ffffff;
+$background: #f8f8f8;
 
 body {
-  background-color: #F8F8F8;
+  background-color: $background;
 }
 
 .listing-parent {
   display: flex;
   margin: 20px auto;
   & > .listing {
-    background-color: #ffffff;
+    background-color: $white;
     border: 1px solid $border-color;
     flex: 1;
     padding: 0;
@@ -21,10 +23,18 @@ body {
     }
     & .text-container {
       padding: 15px;
+      padding-top: 0;
+      .text-field {
+        text-align: center;
+        font-size: 2em;
+        font-weight: bold;
+        border-top: 1px solid $border-color;
+        padding-top: 15px;
+      }
     }
     .number-indicator {
       position: absolute;
-      background-color: white;
+      background-color: $white;
       font-size: 2em;
       z-index: 200;
       border-right: 1px solid $border-color;
@@ -48,47 +58,51 @@ body {
     display: flex;
     align-items: center;
     z-index: 2;
-    border: 2px solid #fff;
+    border: 2px solid $white;
     box-shadow: 0px 8px 42px -10px rgba(46,46,46,1)
+  }
+  .esa-icon {
+    border-radius: 200px;
+    box-shadow: 5px 2px 11px #acacac;
+    padding: 0;
   }
   .search-text {
     text-align: center;
     font-size: 2em;
-    background-color: white;
+    background-color: $white;
     box-shadow: 2px 3px 34px -12px rgba(50,50,50,1);
     color: #acacac;
-    margin: 20px auto;
-    border-radius: 20px;
+    margin: 0 auto 20px;
+    border-radius: 50px;
     padding: 10px;
     font-weight: bold;
     position: relative;
     .bubble-arrow {
       position: absolute;
-      bottom: 61px;
-      left: -33px;
+      bottom: 6px;
+      left: -110px;
       width: 0;
       height: 0;
-      border-top: 9px solid transparent;
-      border-bottom: 1px solid transparent;
-      border-right: 33px solid #ddd;
-      transform: rotate(-14deg);
+      border-top: 11px solid transparent;
+      border-bottom: 3px solid transparent;
+      border-right: 116px solid #ddd;
+      transform: rotate(-18deg);
       z-index: 40;
       box-shadow: 4px 4px 34px -12px #323232;
     }
   }
   .search-phrase {
-    background-color: #ffffff;
+    background-color: $white;
     color: #acacac;
     font-style: italic;
-    text-align: center;
     font-size: 2em;
     .text-search {
-      border: 1px solid #dcdcdc;
+      border: 1px solid $border-color;
     }
     .img-search {
       padding: 0;
+      border: 1px solid $border-color;
       border-top: none;
-      border: 1px solid #dcdcdc;
     }
   }
   .item-container {
