@@ -43,9 +43,9 @@ class App extends React.Component {
       return null;
     } else {
       ComponentToShow = Listings;
-      header = this.state.keywords;
+      header = this.state.keywords || query.header;
     }
-    
+
     return (
       <div>
         <h1 className="text-center">{header}</h1>

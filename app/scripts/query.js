@@ -50,6 +50,43 @@ class Query {
     }
   }
 
+  getMockData() {
+    var data = {};
+    _.set(data, 'findItemsByKeywordsResponse[0].searchResult[0].item', [
+      {
+        title: ['Athletic'],
+        viewItemURL: [0],
+        galleryURL: ['http://i.ebayimg.com/00/s/ODgyWDg4Mg==/z/HUUAAOSwx-9W0vNC/$_26.JPG']
+      },
+      {
+        title: ['Boots'],
+        viewItemURL: [1],
+        galleryURL: ['http://thumbs.ebaystatic.com/images/g/K9gAAOSwBLlVK~jU/s-l160.jpg']
+      },
+      {
+        title: ['Heels'],
+        viewItemURL: [2],
+        galleryURL: ['http://thumbs.ebaystatic.com/images/g/U5QAAOSwwE5WZ02T/s-l160.jpg']
+      },
+      {
+        title: ['Flats and Oxfords'],
+        viewItemURL: [3],
+        galleryURL: ['http://thumbs.ebaystatic.com/images/g/~OQAAOSwEeFVHCJ9/s-l160.jpg']
+      },
+      {
+        title: ['Sandals and Flip Flops'],
+        viewItemURL: [4],
+        galleryURL: ['http://thumbs.ebaystatic.com/images/m/mcsNOBOpc6suLgo56MMyysw/s-l160.jpg']
+      },
+      {
+        title: ['Occupational'],
+        viewItemURL: [5],
+        galleryURL: ['http://thumbs.ebaystatic.com/images/g/dYcAAOSwpRRWpXRh/s-l160.jpg']
+      }
+    ]);
+    return data;
+  }
+
   runQuery() {
     $.ajax({
       url: '/query',
@@ -61,6 +98,10 @@ class Query {
         this.keywords = '';
         if (this.dynamoDB.St >= 2) {
           this.keywords = `${this.dynamoDB.Gender || ''} ${this.dynamoDB.Tipe || ''} ${this.dynamoDB.Category || ''} ${size}`;
+        } else if (this.dynamoDB.St === 1) {
+          // Mock data
+          this.data = this.getMockData();
+          this.header = 'Shop for shoes';
         }
 
         if (this.keywords) {
