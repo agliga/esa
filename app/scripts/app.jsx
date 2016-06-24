@@ -41,11 +41,11 @@ class App extends React.Component {
     var state = _.get(this.state.dynamoDB, 'St', -1);
     var header;
     console.log('what is state', state, this.state);
-    if (state === '0') {
+    if (state === 0) {
       header = 'eBay Shopping Assistant';
-    } else if (state === '-1') {
+    } else if (state === -1) {
       header = '';
-    } else if (state === '3') {
+    } else if (state === 3) {
       header = _.get(this.state, 'listing.title[0]', '');
     } else {
       header = this.state.keywords || query.header;

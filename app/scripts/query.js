@@ -103,20 +103,20 @@ class Query {
   reroute() {
     console.log(this.oldState, this.dynamoDB);
     window.hashHistory = hashHistory;
-    if (this.oldState !== this.dynamoDB.St) {
-      this.oldState = this.dynamoDB.St;
-      console.log(this.dynamoDB.St === 0);
-      switch (this.dynamoDB.St) {
-      case '0':
+    var state = parseInt(this.dynamoDB.St, 10);
+    if (this.oldState !== state) {
+      this.oldState = state;
+      switch (state) {
+      case 0:
         hashHistory.push('/start');
         break;
-      case '1':
+      case 1:
         hashHistory.push('/listings');
         break;
-      case '2':
+      case 2:
         hashHistory.push('/listings');
         break;
-      case '3':
+      case 3:
         hashHistory.push('/item');
         break;
       default:
@@ -197,6 +197,7 @@ class Query {
       'paginationInput.entriesPerPage': 6
     }, this.urlFilter), (response) => {
       this.data = response;
+      this.runGetItemJSONP();
       this.triggerUpdate();
     });
   }

@@ -21,9 +21,9 @@ export class Item extends React.Component {
     query.detachListener(this);
   }
 
-  getItem(url) {
+  getItem(url, index) {
     return (
-      <div className="col-sm-4 item">
+      <div className="col-sm-4 item" key={index}>
       <img className="images" src={url}/>
       </div>
     )
